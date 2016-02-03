@@ -10,11 +10,14 @@ from bokeh.plotting import ColumnDataSource
 from bokeh.models import (HoverTool, 
                           BoxZoomTool,
                           ResetTool,
+                          PanTool,
+                          WheelZoomTool,
                           Slider,
                           CustomJS,
                           Range1d,
                           Circle,
-                          Text)
+                          Text,
+                          NumeralTickFormatter)
 
 from bokeh.io import vform
 
@@ -106,11 +109,24 @@ max_x = 1000 * (max_gdp // 1000) + 1000
 min_y = 10 * (min_lex // 10)
 max_y = 100 * (max_lex // 100) + 100
 
-p = bk.Figure(tools=[hover, BoxZoomTool(), ResetTool()],
+tools = [
+    hover,
+    WheelZoomTool(),
+    PanTool(),
+    BoxZoomTool(),
+    ResetTool(),
+]
+
+p = bk.Figure(tools=tools,
               x_axis_type="log",
+              x_axis_label="Income per person "
+              "(GDP/capita, PPP$ inflation-adjusted)",
+              y_axis_label="Life expectancy (years)",
               x_range=Range1d(min_x, max_x), 
               y_range=Range1d(min_y, max_y),
               plot_width=700)
+
+p.xaxis[0].formatter = NumeralTickFormatter(format='0a')
 
 text_x = 15000
 text_y = 20
